@@ -23,7 +23,7 @@ if CONTRIB_PATH not in sys.path:
     sys.path.insert(0, CONTRIB_PATH)
 
 from flake8 import __version__ as flake8_version
-from flake8._pyflakes import patch_pyflakes
+from flake8.plugins.pyflakes import patch_pyflakes
 import flake8_debugger
 from flake8_import_order import (
     __version__ as flake8_import_order_version,
