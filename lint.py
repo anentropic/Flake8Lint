@@ -17,7 +17,7 @@ except ImportError:
     pass
 
 # Add 'contrib' to sys.path to simulate installation of package 'flake8'
-# and it's dependencies: 'pyflake', 'pep8', 'mccabe' and 'pep8-naming'
+# and it's dependencies: 'pyflake', 'pycodestyle', 'mccabe' and 'pep8-naming'
 CONTRIB_PATH = os.path.join(os.path.dirname(__file__), 'contrib')
 if CONTRIB_PATH not in sys.path:
     sys.path.insert(0, CONTRIB_PATH)
@@ -25,16 +25,14 @@ if CONTRIB_PATH not in sys.path:
 from flake8 import __version__ as flake8_version
 from flake8.plugins.pyflakes import patch_pyflakes
 import flake8_debugger
-from flake8_import_order import (
-    __version__ as flake8_import_order_version,
-    ImportOrderChecker
-)
+from flake8_import_order import __version__ as flake8_import_order_version
+from flake8_import_order.checker import ImportOrderChecker
 import mccabe
-import pep8
+import pycodestyle
 import pep8ext_naming
 from pydocstyle import (
     __version__ as pydocstyle_version,
-    PEP257Checker
+    ConventionChecker as PEP257Checker
 )
 from pyflakes import (
     __version__ as pyflakes_version,
@@ -57,7 +55,7 @@ CONFIG_FILES = ('setup.cfg', 'tox.ini', '.pep8')
 def tools_versions():
     """Return all lint tools versions."""
     return (
-        ('pep8', pep8.__version__),
+        ('pycodestyle', pycodestyle.__version__),
         ('flake8', flake8_version),
         ('pyflakes', pyflakes_version),
         ('mccabe', mccabe.__version__),
@@ -68,7 +66,7 @@ def tools_versions():
     )
 
 
-class Pep8Report(pep8.BaseReport):
+class Pep8Report(pycodestyle.BaseReport):
     """Collect all check results."""
 
     def __init__(self, options):
@@ -194,7 +192,7 @@ def lint(lines, settings):
 
     # lint with pep8
     if settings.get('pep8', True):
-        pep8style = pep8.StyleGuide(
+        pep8style = pycodestyle.StyleGuide(
             reporter=Pep8Report,
             ignore=['DIRTY-HACK'],  # PEP8 error will never starts like this
             max_line_length=settings.get('pep8_max_line_length')
@@ -375,7 +373,7 @@ if __name__ == "__main__":
     arg_parser.add_argument('--builtins',
                             help="python builtins extend")
     arg_parser.add_argument('--pep8', action='store_true',
-                            help="run pep8 lint")
+                            help="run pycodestyle (pep8) lint")
     arg_parser.add_argument('--pydocstyle', action='store_true',
                             help="run pydocstyle lint")
     arg_parser.add_argument('--naming', action='store_true',
